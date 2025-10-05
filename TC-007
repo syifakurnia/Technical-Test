@@ -1,0 +1,23 @@
+// Nama Tes: TC-007 - Happy Path: Delete a pet by ID
+
+// Ambil ID Pet dari variabel lingkungan
+const deletedPetId = pm.environment.get("petId");
+
+// --- 1. Validasi Status Code 200 OK ---
+pm.test("TC-007: Status code is 200 OK", function () {
+    pm.response.to.have.status(200);
+});
+
+// --- 2. Validasi Konfirmasi Penghapusan ---
+const responseJson = pm.response.json();
+
+pm.test("TC-007: Response message confirms deletion of the correct Pet ID", function () {
+    // API Petstore mengembalikan ID yang dihapus sebagai string di field 'message'
+    // Kita bandingkan dengan ID yang tersimpan (dikonversi ke string)
+    pm.expect(responseJson.message).to.eql(deletedPetId.toString());
+});
+
+// --- 3. Optional: Clear the Environment Variable ---
+pm.environment.unset("petId");
+
+console.log("Pet ID " + deletedPetId + " successfully deleted and environment variable cleared.");
