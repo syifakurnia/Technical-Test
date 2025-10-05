@@ -1,0 +1,26 @@
+// Nama Tes: TC-001 Add a new pet
+
+// 1. Validasi Status Code 200 OK
+pm.test("TC-001: Status code is 200 OK", function () {
+    pm.response.to.have.status(200);
+});
+
+// 2. Validasi bahwa response body berisi 'name' yang kita kirim
+const responseJson = pm.response.json();
+pm.test("TC-001: Pet Name in response is 'Cattie'", function () {
+    pm.expect(responseJson.name).to.eql("Cattie");
+});
+
+// 3. Simpan Pet ID ke Environment Variable untuk Chaining (Paling Penting!)
+const newPetId = responseJson.id;
+
+// Set environment variable 'petId' dengan ID yang baru diterima
+pm.environment.set("petId", newPetId);
+
+pm.test("TC-001: Pet ID " + newPetId + " successfully stored for chaining", function() {
+    // Pastikan ID yang disimpan berupa angka
+    pm.expect(newPetId).to.be.a('number');
+});
+
+// Opsional: Log ID baru ke konsol Postman untuk debugging
+console.log("New Pet ID created and stored: " + newPetId);
