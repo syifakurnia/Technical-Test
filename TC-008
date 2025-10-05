@@ -1,0 +1,14 @@
+// Nama Tes TC-008 - Verifikasi: Pet yang sudah dihapus tidak ditemukan
+
+// --- 1. Validasi Status Code 404 Not Found ---
+pm.test("TC-008: Status code is 404 Not Found (Expected)", function () {
+    // Ekspektasi 404 karena Pet sudah dihapus
+    pm.response.to.have.status(404);
+});
+
+// --- 2. Validasi Pesan Kesalahan ---
+const responseJson = pm.response.json();
+pm.test("TC-008: Response message is 'Pet not found'", function () {
+    // Memastikan pesan kesalahan sesuai
+    pm.expect(responseJson.message).to.eql("Pet not found");
+});
