@@ -1,0 +1,39 @@
+// Nama Tes: TC-002 - Negatif: Missing Mandatory Field (Name)
+
+// --- A. Validasi Respon API (Expected 400 Bad Request) ---
+pm.test("TC-002: Status code is 400 Bad Request", function () {
+    // Expected: API seharusnya menolak request dan mengembalikan 400
+    pm.response.to.have.status(400);
+});
+
+// Karena API Petstore sering gagal pada validasi, kita juga harus menguji skenario Kegagalan yang Menghasilkan Status 200 (sebagai 'Bug')
+if (pm.response.code === 200) {
+    // Ini adalah BUG. API seharusnya tidak mengizinkan pembuatan Pet tanpa 'name'.
+    
+    pm.test("TC-002: BUG FOUND - API Created Pet despite missing 'name' (FAIL)", function () {
+        // Jika kode 200, tes ini akan GAGAL (fail)
+        pm.expect(true, "Pet created successfully. Validation is broken!").to.be.false; 
+    });
+    
+    // Opsional: Cek apakah 'name' diisi dengan nilai default
+    const responseJson = pm.response.json();
+    pm.test("TC-002: Check if default name is used (e.g. 'doggie')", function () {
+        // Petstore sering mengisi name dengan "doggie" secara default
+        pm.expect(responseJson.name).to.equal("doggie");
+    });
+
+} else if (pm.response.code === 400) {
+    // Ini adalah skenario yang benar (PASS)
+    
+    pm.test("TC-002: Expected Behavior - API correctly returned 400 Bad Request (PASS)", function () {
+        // Jika kode 400, tes ini akan LULUS (pass)
+        pm.expect(true).to.be.true;
+    });
+    
+    // Opsional: Cek pesan kesalahan
+    const responseJson = pm.response.json();
+    pm.test("TC-002: Response body contains error message", function () {
+        // Periksa apakah body respons mengandung pesan kesalahan yang sesuai
+        pm.expect(responseJson.message).to.be.a('string');
+    });
+}
